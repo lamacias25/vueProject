@@ -182,17 +182,20 @@ export default {
       };
     },
     actualizar: function () {
-      axios
-        .post("http://127.0.0.1:8800/consulta", {
-          data: {
-            tabla: "users",
-            columnas: ["*"],
-          },
-        })
-        .then((response) => {
-          console.log(response.data.message);
-          this.listaUsuarios = response.data.message;
-        });
+      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+        axios
+          .post("http://127.0.0.1:8800/consulta", {
+            data: {
+              tabla: "users",
+              columnas: ["*"],
+              Authentication: response.data.token,
+            },
+          })
+          .then((response2) => {
+            console.log(response2.data.message);
+            this.listaUsuarios = response2.data.message;
+          });
+      });
     },
     converteFormat: function (data) {
       let datos = {};
@@ -200,31 +203,37 @@ export default {
       return datos;
     },
     modificar: function (data) {
-      console.log(this.converteFormat(data));
-      axios
-        .post("http://127.0.0.1:8800/modificar", {
-          data: {
-            tabla: "users",
-            data: this.converteFormat(data),
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          this.actualizar();
-        });
+      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+        console.log(this.converteFormat(data));
+        axios
+          .post("http://127.0.0.1:8800/modificar", {
+            data: {
+              tabla: "users",
+              data: this.converteFormat(data),
+              Authentication: response.data.token,
+            },
+          })
+          .then((response2) => {
+            console.log(response2);
+            this.actualizar();
+          });
+      });
     },
     eliminar: function (data) {
-      axios
-        .post("http://127.0.0.1:8800/eliminar", {
-          data: {
-            tabla: "users",
-            ele: data,
-          },
-        })
-        .then((response) => {
-          console.log(response.data.message);
-          this.actualizar();
-        });
+      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+        axios
+          .post("http://127.0.0.1:8800/eliminar", {
+            data: {
+              tabla: "users",
+              ele: data,
+              Authentication: response.data.token,
+            },
+          })
+          .then((response2) => {
+            console.log(response2.data.message);
+            this.actualizar();
+          });
+      });
     },
     send: function (idForm) {
       let datosForm = toRaw(this.info)[idForm][0];
@@ -245,14 +254,17 @@ export default {
             break;
         }
       datosCorrectos
-        ? axios
-            .post("http://127.0.0.1:8800/insert", {
-              data: datosForm,
-            })
-            .then((response) => {
-              console.log(response);
-              this.actualizar();
-            })
+        ? axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+            axios
+              .post("http://127.0.0.1:8800/insert", {
+                data: datosForm,
+                Authentication: response.data.token,
+              })
+              .then((response2) => {
+                console.log(response2);
+                this.actualizar();
+              });
+          })
         : alert("Algo Salio Mal");
     },
   },

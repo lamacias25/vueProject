@@ -145,10 +145,14 @@ app.post('/login', function(req, res) {
   const token = jwt.sign(user, 'password'); // Replace 'your-secret-key' with a secure secret key
   res.json({ token });
 });
-app.post('/consulta', function(req, res){
+app.post('/log', function(req, res) {
+  console.log(req.body);
+  res.json({res:'listo'});
+});
+app.post('/consulta', verifyToken, (req, res)=>{
 		var result=consulta(req.body.data.columnas,req.body.data.tabla,res);
 });
-app.post('/insert', function(req, res){
+app.post('/insert', verifyToken, (req, res)=>{
 	req.body.data= sanitizar(req.body.data);
 	let datos = {};
 	let correcto = true;
@@ -156,17 +160,28 @@ app.post('/insert', function(req, res){
 		datos[req.body.data[i].name]=req.body.data[i].value;
 	alta(datos, 'users',res);
 });
-app.post('/modificar', function(req, res){
+app.post('/modificar', verifyToken, (req, res)=>{
 	let id = req.body.data.data["id_users"].value;
 	delete req.body.data.data.id_users;
 	let datos= sanitizar(req.body.data.data);
 	modificar(datos, id, 'users',res);
 });
-app.post('/eliminar', function(req, res){
+app.post('/eliminar', verifyToken, (req, res)=>{
 	eliminar(req.body.data.ele.id, 'users',res);
 });
-function verifyToken(token) {
-  return true;
+function verifyToken(req, res, next) {
+	  const token = req.body.data.Authentication; // Typically, you'd send the token in the Authorization header
+console.log(token);
+  if (!token) {
+    return res.status(403).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, 'password', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Failed to authenticate token' });
+    }
+    next();
+  });
 }
 function sanitizar(data){
 	for(let ele in data){
