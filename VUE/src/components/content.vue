@@ -2,7 +2,7 @@
   <div
     v-for="(elex, index) in info"
     v-bind:key="index"
-    class="card col-5 mx-auto mt-2"
+    class="card col-md-5 mx-auto mt-2"
   >
     <div v-for="(y, indexY) in elex" v-bind:key="indexY" class="card-body">
       <div v-for="(x, indexX) in y" v-bind:key="indexX" class="row">
@@ -25,52 +25,13 @@
           {{ x.label }}
         </button>
         <textarea v-if="x.type == 'area'" class="form-control"></textarea>
-        <div v-if="x.type == 'lista'" class="container">
-          <div class="d-flex">
-            <div
-              v-for="(name, indexZ) in x.list"
-              v-bind:key="indexZ"
-              class="mx-auto"
-            >
-              <button
-                @click="add(index, indexY, indexX, name)"
-                class="btn btn-primary"
-              >
-                {{ name.label }}
-              </button>
-            </div>
-          </div>
-          <div
-            v-for="(name, indexZ) in x.nlist"
-            v-bind:key="indexZ"
-            class="mx-auto"
-          >
-            <label>{{ name.label }}</label>
-            <input
-              type="text"
-              v-if="name.type == 'titulo'"
-              class="form-control"
-              v-bind:class="valida(name.text)"
-              v-model="info[index][indexY][indexX].nlist[indexZ].value"
-            />
-            <input
-              type="button"
-              v-if="name.type == 'button'"
-              class="form-control"
-            />
-            <textarea
-              v-if="name.type == 'text'"
-              class="form-control"
-            ></textarea>
-          </div>
-        </div>
       </div>
       <button @click="send(indexY)" class="btn btn-primary mt-2">
         Send Data
       </button>
     </div>
   </div>
-  <div class="card col-10 mx-auto md-3">
+  <div class="card col-md-10 mx-auto mt-3">
     <table class="table">
       <thead>
         <h1>Usuarios</h1>
@@ -85,49 +46,59 @@
           <td>Acciones</td>
         </tr>
         <tr class="" v-for="(ele, i) in listaUsuarios" v-bind:key="i">
-          <td v-bind:id="i">
+          <td v-bind:id="i" class="col-md-2">
             <input
               type="text"
-              class="form-control col-2"
+              class="form-control"
+              v-bind:class="validaText(listaUsuarios[i].nombre)"
               v-model="listaUsuarios[i].nombre"
             />
           </td>
-          <td v-bind:id="i">
+          <td v-bind:id="i" class="col-md-2">
             <input
               type="text"
-              class="form-control col-2"
+              class="form-control"
+              v-bind:class="validaText(listaUsuarios[i].paterno)"
               v-model="listaUsuarios[i].paterno"
             />
           </td>
-          <td v-bind:id="i">
+          <td v-bind:id="i" class="col-md-2">
             <input
               type="text"
-              class="form-control col-2"
+              class="form-control"
+              v-bind:class="validaText(listaUsuarios[i].materno)"
               v-model="listaUsuarios[i].materno"
             />
           </td>
-          <td v-bind:id="i">
+          <td v-bind:id="i" class="col-md-2">
             <input
               type="text"
-              class="form-control col-2"
+              class="form-control"
+              v-bind:class="validaText(listaUsuarios[i].domicilio)"
               v-model="listaUsuarios[i].domicilio"
             />
           </td>
-          <td v-bind:id="i">
+          <td v-bind:id="i" class="col-md-2">
             <input
               type="text"
-              class="form-control col-2"
+              class="form-control"
+              v-bind:class="validaEmail(listaUsuarios[i].correo)"
               v-model="listaUsuarios[i].correo"
             />
           </td>
-          <td>
+          <td class="col-md-2">
             <button
               v-bind:id="i"
+              class="btn btn-danger"
               @click="eliminar({ correo: ele.correo, id: ele.id_users })"
             >
               Eliminar
             </button>
-            <button v-bind:id="i" @click="modificar(listaUsuarios[i])">
+            <button
+              v-bind:id="i"
+              class="btn btn-success"
+              @click="modificar(listaUsuarios[i])"
+            >
               Actualizar
             </button>
           </td>
@@ -181,8 +152,26 @@ export default {
           ),
       };
     },
+    check: function (data) {
+      let datosForm = [];
+      for (let i in data)
+        if (i != "id_users")
+          switch (data[i]["type"]) {
+            case "mail":
+              if (this.validaEmail(data[i]["value"])["is-invalid"])
+                datosForm.push(data[i]["value"]);
+              break;
+            case "text":
+              if (this.validaText(data[i]["value"])["is-invalid"])
+                datosForm.push(data[i]["value"]);
+              break;
+            default:
+              break;
+          }
+      return datosForm;
+    },
     actualizar: function () {
-      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+      axios.get("http://127.0.0.1:8800/login").then((response) => {
         axios
           .post("http://127.0.0.1:8800/consulta", {
             data: {
@@ -192,35 +181,40 @@ export default {
             },
           })
           .then((response2) => {
-            console.log(response2.data.message);
             this.listaUsuarios = response2.data.message;
           });
       });
     },
     converteFormat: function (data) {
       let datos = {};
-      for (let i in data) datos[i] = { value: data[i] };
+      for (let i in data)
+        datos[i] = { value: data[i], type: i == "correo" ? "mail" : "text" };
+      delete datos["updatedAt"];
+      delete datos["createdAt"];
       return datos;
     },
     modificar: function (data) {
-      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
-        console.log(this.converteFormat(data));
-        axios
-          .post("http://127.0.0.1:8800/modificar", {
-            data: {
-              tabla: "users",
-              data: this.converteFormat(data),
-              Authentication: response.data.token,
-            },
+      let datosForm = this.converteFormat(data);
+      let errores = this.check(datosForm);
+      errores.length == 0
+        ? axios.get("http://127.0.0.1:8800/login").then((response) => {
+            axios
+              .post("http://127.0.0.1:8800/modificar", {
+                data: {
+                  tabla: "users",
+                  data: datosForm,
+                  Authentication: response.data.token,
+                },
+              })
+              .then((response2) => {
+                console.log(response2);
+                this.actualizar();
+              });
           })
-          .then((response2) => {
-            console.log(response2);
-            this.actualizar();
-          });
-      });
+        : alert("Existen errores en: " + errores);
     },
     eliminar: function (data) {
-      axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+      axios.get("http://127.0.0.1:8800/login").then((response) => {
         axios
           .post("http://127.0.0.1:8800/eliminar", {
             data: {
@@ -237,23 +231,8 @@ export default {
     },
     send: function (idForm) {
       let datosForm = toRaw(this.info)[idForm][0];
-      let datosCorrectos = true;
-      for (let i in datosForm)
-        switch (datosForm[i]["type"]) {
-          case "mail":
-            if (this.validaEmail(datosForm[i]["value"])["is-invalid"]) {
-              datosCorrectos = false;
-            }
-            break;
-          case "text":
-            if (this.validaText(datosForm[i]["value"])["is-invalid"]) {
-              datosCorrectos = false;
-            }
-            break;
-          default:
-            break;
-        }
-      datosCorrectos
+      let errores = this.check(datosForm);
+      errores.length == 0
         ? axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
             axios
               .post("http://127.0.0.1:8800/insert", {
@@ -265,7 +244,7 @@ export default {
                 this.actualizar();
               });
           })
-        : alert("Algo Salio Mal");
+        : alert("Existen errores en: " + errores);
     },
   },
   mounted() {
