@@ -27,4 +27,6 @@ npm install sequelize
 
 # Realizar la instalcion de VUE mediante los pasos que señalan en la siguiente pagina https://es.vuejs.org/v2/guide/installation
 
-#
+# En la carpeta VUE ejecutar en una terminal el siguiente comando para la ejecucion del servicio de VUE
+
+npm run serve
