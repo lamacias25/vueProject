@@ -21,6 +21,13 @@
           v-bind:class="validaEmail(info[index][indexY][indexX].value)"
           v-model="info[index][indexY][indexX].value"
         />
+        <input
+          type="number"
+          v-if="x.type == 'number'"
+          class="form-control"
+          v-bind:class="validaNumber(info[index][indexY][indexX].value)"
+          v-model="info[index][indexY][indexX].value"
+        />
         <button v-if="x.type == 'button'" class="btn btn-primary mx-auto">
           {{ x.label }}
         </button>
@@ -74,13 +81,13 @@
             <input
               type="text"
               class="form-control"
-              v-bind:class="validaText(listaUsuarios[i].domicilio)"
-              v-model="listaUsuarios[i].domicilio"
+              v-bind:class="validaNumber(listaUsuarios[i].stock)"
+              v-model="listaUsuarios[i].stock"
             />
           </td>
           <td v-bind:id="i" class="col-md-2">
             <input
-              type="text"
+              type="number"
               class="form-control"
               v-bind:class="validaEmail(listaUsuarios[i].correo)"
               v-model="listaUsuarios[i].correo"
@@ -129,7 +136,16 @@ export default {
         value: "",
       });
     },
-
+    validaNumber: function (value) {
+      return {
+        "is-valid": /^([0-9])*$/.test(
+          value
+        ),
+        "is-invalid": !/^([0-9])*$/.test(
+          value
+        ),
+      };
+    },
     validaEmail: function (value) {
       return {
         "is-valid": /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(
@@ -233,7 +249,8 @@ export default {
       let datosForm = toRaw(this.info)[idForm][0];
       let errores = this.check(datosForm);
       errores.length == 0
-        ? axios.post("http://127.0.0.1:8800/login", {}).then((response) => {
+        ? axios.get("http://127.0.0.1:8800/login", {}).then((response) => {
+          console.log(response);
             axios
               .post("http://127.0.0.1:8800/insert", {
                 data: datosForm,
@@ -266,9 +283,9 @@ export default {
       label: "Apellido Materno",
     });
     inputs.push({
-      name: "domicilio",
-      type: "text",
-      label: "Domicilio",
+      name: "stock",
+      type: "number",
+      label: "Stock",
     });
     inputs.push({
       name: "correo",

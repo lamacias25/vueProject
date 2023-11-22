@@ -143,7 +143,7 @@ eliminar(id, tabla, r) {
   }
 }
 verifyToken(req, res, next) {
-  const token = req.body.data.Authentication; // Typically, you'd send the token in the Authorization header
+  const token = req.body.Authentication?req.body.Authentication:req.body.data.Authentication; // Typically, you'd send the token in the Authorization header
   console.log(token);
   if (!token) {
     return res.status(403).json({ message: "No token provided" });

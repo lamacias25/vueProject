@@ -8,8 +8,10 @@
     "start:dev": "nodemon modelosNJS"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "express": "^4.17.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
@@ -18,7 +20,7 @@
     "node-graphviz": "github:JosephusPaye/node-graphviz",
     "nodemailer": "^6.8.0",
     "request": "^2.88.2",
-    "sequelize": "^6.33.0",
+    "sequelize": "^6.35.1",
     "soap": "^0.43.0"
   },
   "devDependencies": {
