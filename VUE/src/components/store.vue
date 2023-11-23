@@ -2,7 +2,7 @@
   <div class="card col-md-10 mx-auto mt-3">
     <div class="listProducts">
         <div v-for="(ele, i) in listaUsuarios" v-bind:key="i" class="product">
-          <img src="../assets/producto.jpg">
+          <img src="../assets/producto.png">
           <h3>{{listaUsuarios[i].nombre}}</h3>
           <p>{{listaUsuarios[i].descripcion}}</p>
           <div v-bind:id="i" class="control card">
@@ -32,7 +32,7 @@
       
       <div class="lista_carrito" v-if="showCar && Object.keys(carrito).length>0">
       <div v-for="(ele, i) in carrito" v-bind:key="i" class="miniProduct">
-          <img src="../assets/producto.jpg">
+          <img src="../assets/producto.png">
           <p>{{carrito[i]}}</p>
         </div>
         </div>
@@ -276,6 +276,7 @@ export default {
     align-content: center;
     justify-content: center;
     align-items: baseline;
+    z-index: 6;
 }
 .control > button {
     width: 30px;

@@ -247,7 +247,7 @@ export default {
       label: "Producto",
     });
     inputs.push({
-      name: "materno",
+      name: "descripcion",
       type: "text",
       label: "Descripcion",
     });
