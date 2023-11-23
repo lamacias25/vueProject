@@ -5,7 +5,6 @@
   <FormContenido v-if="page=='admin_list'"/>
   <StoreContent v-if="page=='product_list'"/>
 </template>
-
 <script>
 import FormContenido from "./components/content.vue";
 import StoreContent from "./components/store.vue";
