@@ -89,7 +89,7 @@ consulta(column, tabla, r) {
 alta(data, tabla, r) {
   var column = Object.keys(data);
   var estructura = [];
-  estructura["id_producto"] = { type: Sequelize.INTEGER, primaryKey: true };
+  estructura["id_users"] = { type: Sequelize.INTEGER, primaryKey: true };
   column.forEach(function (value) {
     estructura[value] = Sequelize.STRING;
   });
@@ -108,7 +108,7 @@ alta(data, tabla, r) {
 }
 async modificar(data, id, tabla, r) {
   var estructura = [];
-  estructura["id_producto"] = { type: Sequelize.INTEGER, primaryKey: true };
+  estructura["id_users"] = { type: Sequelize.INTEGER, primaryKey: true };
   var column = Object.keys(data);
   column.forEach(function (value) {
     estructura[value] = Sequelize.STRING;
@@ -120,7 +120,7 @@ async modificar(data, id, tabla, r) {
   try {
     const users = this.sequelize.define("users", estructura, { timestamps: false });
     await users.update(dataSequileze, {
-      where: { id_producto: id },
+      where: { id_users: id },
     });
     r.send({
       datos: true,
@@ -131,10 +131,10 @@ async modificar(data, id, tabla, r) {
 }
 eliminar(id, tabla, r) {
   var estructura = [];
-  estructura["id_producto"] = { type: Sequelize.INTEGER, primaryKey: true };
+  estructura["id_users"] = { type: Sequelize.INTEGER, primaryKey: true };
   try {
     const users = this.sequelize.define("users", estructura, { timestamps: false });
-    users.destroy({ where: { id_producto: id } });
+    users.destroy({ where: { id_users: id } });
     r.send({
       datos: true,
     });

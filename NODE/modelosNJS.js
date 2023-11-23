@@ -32,8 +32,8 @@ app.post("/insert", per.verifyToken, (req, res) => {
   per.alta(datos, "users", res);
 });
 app.post("/modificar", per.verifyToken, (req, res) => {
-  let id = req.body.data.data["id_producto"].value;
-  delete req.body.data.data.id_producto;
+  let id = req.body.data.data["id_users"].value;
+  delete req.body.data.data.id_users;
   let datos = per.sanitizar(req.body.data.data);
   per.modificar(datos, id, "users", res);
 });
