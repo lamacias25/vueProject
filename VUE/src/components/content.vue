@@ -62,8 +62,8 @@
             <input
               type="text"
               class="form-control"
-              v-bind:class="validaText(listaUsuarios[i].paterno)"
-              v-model="listaUsuarios[i].paterno"
+              v-bind:class="validaText(listaUsuarios[i].descripcion)"
+              v-model="listaUsuarios[i].descripcion"
             />
           </td>
           <td v-bind:id="i" class="col-md-2">
@@ -78,7 +78,7 @@
             <button
               v-bind:id="i"
               class="btn btn-danger"
-              @click="eliminar({ correo: ele.correo, id: ele.id_users })"
+              @click="eliminar({ correo: ele.correo, id: ele.id_producto })"
             >
               Eliminar
             </button>
@@ -127,24 +127,14 @@ export default {
         ),
       };
     },
-    validaEmail: function (value) {
-      return {
-        "is-valid": /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(
-          value
-        ),
-        "is-invalid": !/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(
-          value
-        ),
-      };
-    },
     validaText: function (value) {
       return {
         "is-valid":
-          /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+){0,5}(?<!\s)$/.test(
+          /^[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:\s+[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ,.:]+){0,300}(?<!\s)$/.test(
             value
           ),
         "is-invalid":
-          !/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+){0,5}(?<!\s)$/.test(
+          !/^[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:\s+[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ,.:]+){0,300}(?<!\s)$/.test(
             value
           ),
       };
@@ -153,12 +143,8 @@ export default {
       let datosForm = [];
       for (let i in data){
         console.log(data[i]);
-        if (i != "id_users")
+        if (i != "id_producto")
           switch (data[i]["type"]) {
-            case "mail":
-              if (this.validaEmail(data[i]["value"])["is-invalid"])
-                datosForm.push(data[i]["value"]);
-              break;
             case "text":
               if (this.validaText(data[i]["value"])["is-invalid"])
                 datosForm.push(data[i]["value"]);

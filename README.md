@@ -20,6 +20,7 @@ npm install method-override
 npm install cors
 npm install jsonwebtoken
 npm install sequelize
+npm install -g @vue/cli
 
 # Ejecutar el comando node \NODE\modelosNJS.js para la ejecucion del servidor Node, el servicio se estara ejecutando el Localhost por el puerto 8800 y se puede acceder a el con la direccion http://127.0.0.1:8800/
 
