@@ -1,19 +1,25 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <FormContenido />
+  <button v-on:click=" page='product_list'">Lista de Contenidos</button>
+  <button v-on:click=" page='admin_list'">Administracion de Productos</button>
+  <FormContenido v-if="page=='admin_list'"/>
+  <StoreContent v-if="page=='product_list'"/>
 </template>
 
 <script>
 import FormContenido from "./components/content.vue";
+import StoreContent from "./components/store.vue";
 
 export default {
   name: "App",
   components: {
     FormContenido,
+    StoreContent,
   },
   data() {
     return {
       info: null,
+      page: "product_list"
     };
   },
 };

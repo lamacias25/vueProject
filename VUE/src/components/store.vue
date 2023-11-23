@@ -1,98 +1,34 @@
 <template>
-  <div
-    v-for="(elex, index) in info"
-    v-bind:key="index"
-    class="card col-md-5 mx-auto mt-2"
-  >
-    <div v-for="(y, indexY) in elex" v-bind:key="indexY" class="card-body">
-      <div v-for="(x, indexX) in y" v-bind:key="indexX" class="row">
-        <label v-if="x.type != 'button'">{{ x.label }}</label>
-        <input
-          type="text"
-          v-if="x.type == 'text'"
-          class="form-control"
-          v-bind:class="validaText(info[index][indexY][indexX].value)"
-          v-model="info[index][indexY][indexX].value"
-        />
-        <input
-          type="text"
-          v-if="x.type == 'mail'"
-          class="form-control"
-          v-bind:class="validaText(info[index][indexY][indexX].value)"
-          v-model="info[index][indexY][indexX].value"
-        />
-        <input
-          type="number"
-          v-if="x.type == 'number'"
-          class="form-control"
-          v-bind:class="validaNumber(info[index][indexY][indexX].value)"
-          v-model="info[index][indexY][indexX].value"
-        />
-        <button v-if="x.type == 'button'" class="btn btn-primary mx-auto">
-          {{ x.label }}
-        </button>
-        <textarea v-if="x.type == 'area'" class="form-control"></textarea>
-      </div>
-      <button @click="send(indexY)" class="btn btn-primary mt-2">
-        Send Data
-      </button>
-    </div>
-  </div>
   <div class="card col-md-10 mx-auto mt-3">
-    <table class="table">
-      <thead>
-        <h1>Usuarios</h1>
-      </thead>
-      <tbody>
-        <tr class="">
-          <td>Producto</td>
-          <td>Descripcion</td>
-          <td>Existencia</td>
-        </tr>
-        <tr class="" v-for="(ele, i) in listaUsuarios" v-bind:key="i">
-          <td v-bind:id="i" class="col-md-2">
-            <input
-              type="text"
-              class="form-control"
-              v-bind:class="validaText(listaUsuarios[i].nombre)"
-              v-model="listaUsuarios[i].nombre"
-            />
-          </td>
-          <td v-bind:id="i" class="col-md-2">
-            <input
-              type="text"
-              class="form-control"
-              v-bind:class="validaText(listaUsuarios[i].paterno)"
-              v-model="listaUsuarios[i].paterno"
-            />
-          </td>
-          <td v-bind:id="i" class="col-md-2">
-            <input
-              type="number"
-              class="form-control"
-              v-bind:class="validaNumber(listaUsuarios[i].stock)"
-              v-model="listaUsuarios[i].stock"
-            />
-          </td>
-          <td class="col-md-2">
+    <div class="carrito"><p>{{ carrito }}</p></div>
+    <div class="listProducts">
+
+        <div v-for="(ele, i) in listaUsuarios" v-bind:key="i" class="product">
+          <img src="../assets/producto.jpg">
+          <h1>{{listaUsuarios[i].nombre}}</h1>
+          <p>{{listaUsuarios[i].paterno}}</p>
+          <div v-bind:id="i" class="control">
             <button
               v-bind:id="i"
               class="btn btn-danger"
-              @click="eliminar({ correo: ele.correo, id: ele.id_users })"
+              @click="eliminarCarrito(ele.id_users)"
             >
-              Eliminar
+              -
             </button>
+            <p>
+              {{listaUsuarios[i].stock}}
+            </p>
             <button
               v-bind:id="i"
               class="btn btn-success"
-              @click="modificar(listaUsuarios[i])"
+              @click="agregarCarrito(ele.id_users )"
             >
-              Actualizar
+              +
             </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+            
+        </div>
+      </div>
   </div>
 </template>
 
@@ -101,12 +37,13 @@ import axios from "axios";
 import { toRaw } from "vue";
 
 export default {
-  name: "FormContenido",
+  name: "StoreContent",
   props: { datos: [] },
   data() {
     return {
       info: this.datos,
       listaUsuarios: [],
+      carrito:0
     };
   },
   methods: {
@@ -217,21 +154,14 @@ export default {
           })
         : alert("Existen errores en: " + errores);
     },
-    eliminar: function (data) {
-      axios.get("http://127.0.0.1:8800/login").then((response) => {
-        axios
-          .post("http://127.0.0.1:8800/eliminar", {
-            data: {
-              tabla: "users",
-              ele: data,
-              Authentication: response.data.token,
-            },
-          })
-          .then((response2) => {
-            console.log(response2.data.message);
-            this.actualizar();
-          });
-      });
+    eliminar: function (id) {
+      console.log(id);
+    },
+    eliminarCarrito(){
+      this.carrito--;
+    },
+    agregarCarrito(){
+      this.carrito++;
     },
     send: function (idForm) {
       let datosForm = toRaw(this.info)[idForm][0];
@@ -278,3 +208,51 @@ export default {
   },
 };
 </script>
+<style>
+.product {
+    width: 350px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    margin: 5px;
+    border: solid 1px #0000006e;
+    box-shadow: inset 0px 0px 16px black;
+}
+.product > img {
+    width: 98px;
+    height: 100px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.listProducts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+.control {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+}
+.carrito {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+}
+</style>

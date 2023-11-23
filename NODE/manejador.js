@@ -160,7 +160,7 @@ sanitizar(data) {
   for (let ele in data) {
     let simbolos = ['"', "'", "'", '"'];
     for (let i in simbolos)
-      data[ele].value = data[ele].value.replace(simbolos[i], "");
+      data[ele].value = data[ele].value.toString().replace(simbolos[i], "");
   }
   return data;
 }
