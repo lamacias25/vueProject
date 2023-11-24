@@ -1,20 +1,20 @@
 <template>
   <div class="card col-md-10 mx-auto mt-3">
     <div class="listProducts">
-      <div v-for="(ele, i) in listaUsuarios" v-bind:key="i" class="product">
+      <div v-for="(ele, i) in productsList" v-bind:key="i" class="product">
         <img src="../assets/producto.png">
-        <h3>{{ listaUsuarios[i].nombre }}</h3>
-        <p>{{ listaUsuarios[i].descripcion }}</p>
+        <h3>{{ productsList[i].nombre }}</h3>
+        <p>{{ productsList[i].descripcion }}</p>
         <div v-bind:id="i" class="control card">
-          <button v-bind:id="i" class="btn btn-danger" @click="eliminarCarrito(ele.id_producto)"
-            :disabled="carrito[ele.id_producto] == undefined">
+          <button v-bind:id="i" class="btn btn-danger" @click="deleteItem(ele.id_producto)"
+            :disabled="cart[ele.id_producto] == undefined">
             -
           </button>
-          <p v-if="carrito[ele.id_producto] != undefined">
-            {{ carrito[ele.id_producto].qty }}
+          <p v-if="cart[ele.id_producto] != undefined">
+            {{ cart[ele.id_producto].qty }}
           </p>
-          <button v-bind:id="i" class="btn btn-success" @click="agregarCarrito(ele.id_producto, listaUsuarios[i].stock)"
-            :disabled="carrito[ele.id_producto]?.qty == listaUsuarios[i].stock || listaUsuarios[i].stock == 0">
+          <button v-bind:id="i" class="btn btn-success" @click="addItem(ele.id_producto, productsList[i].stock)"
+            :disabled="cart[ele.id_producto]?.qty == productsList[i].stock || productsList[i].stock == 0">
             +
           </button>
         </div>
@@ -22,15 +22,15 @@
       <EjemploDos/>
     </div>
     <div class="carrito"><button class="car btn btn-primary" v-on:click="showCar = !showCar"
-        v-if="Object.keys(carrito).length > 0"><i class='fa fa-shopping-cart'></i>
-        <p>{{ Object.keys(carrito).length }}</p>
+        v-if="Object.keys(cart).length > 0"><i class='fa fa-shopping-cart'></i>
+        <p>{{ Object.keys(cart).length }}</p>
       </button>
-      <div class="lista_carrito" v-if="showCar && Object.keys(carrito).length > 0">
-        <div v-for="(ele, i) in carrito" v-bind:key="i" class="miniProduct">
+      <div class="lista_carrito" v-if="showCar && Object.keys(cart).length > 0">
+        <div v-for="(ele, i) in cart" v-bind:key="i" class="miniProduct">
           <img src="../assets/producto.png">
           <div class="data">
-            <p>Producto: {{ carrito[i].name }}</p>
-            <p>Cantidad: {{ carrito[i].qty }}</p>
+            <p>Producto: {{ cart[i].name }}</p>
+            <p>Cantidad: {{ cart[i].qty }}</p>
           </div>
         </div>
       </div>
@@ -46,8 +46,8 @@ export default {
   data() {
     return {
       info: this.datos,
-      listaUsuarios: [],
-      carrito: {},
+      productsList: [],
+      cart: {},
       showCar: false
     };
   },
@@ -59,7 +59,7 @@ export default {
         value: "",
       });
     },
-    actualizar: function () {
+    reload: function () {
       axios.get("http://127.0.0.1:8800/login").then((response) => {
         axios
           .post("http://127.0.0.1:8800/consulta", {
@@ -70,44 +70,44 @@ export default {
             },
           })
           .then((response2) => {
-            this.listaUsuarios = response2.data.message;
+            this.productsList = response2.data.message;
           });
       });
     },
-    eliminarCarrito(id) {
-      (this.carrito[id] != undefined) ? (
-        this.carrito[id].qty == 1 ? delete this.carrito[id] : this.carrito[id].qty--) : alert("No hay mas en el Carrito");
+    deleteItem(id) {
+      (this.cart[id] != undefined) ? (
+        this.cart[id].qty == 1 ? delete this.cart[id] : this.cart[id].qty--) : alert("No hay mas en el Carrito");
     },
-    agregarCarrito(id, max) {
-      (this.carrito[id] != undefined) ? (
-        this.carrito[id].qty == max ? alert("No hay mas en Stock") : this.carrito[id].qty++) : this.carrito[id] = { name: this.find(id).nombre, qty: 1 };
+    addItem(id, max) {
+      (this.cart[id] != undefined) ? (
+        this.cart[id].qty == max ? alert("No hay mas en Stock") : this.cart[id].qty++) : this.cart[id] = { name: this.find(id).nombre, qty: 1 };
 
     },
     find(id) {
-      for (let ele of this.listaUsuarios)
+      for (let ele of this.productsList)
         if (ele.id_producto == id)
           return ele;
       return null;
     },
     send: function (idForm) {
-      let datosForm = toRaw(this.info)[idForm][0];
-      let errores = this.check(datosForm);
+      let dataForm = toRaw(this.info)[idForm][0];
+      let errores = this.check(dataForm);
       errores.length == 0
         ? axios.get("http://127.0.0.1:8800/login", {}).then((response) => {
           axios
             .post("http://127.0.0.1:8800/insert", {
-              data: datosForm,
+              data: dataForm,
               Authentication: response.data.token,
             })
             .then(() => {
-              this.actualizar();
+              this.reload();
             });
         })
         : alert("Existen errores en: " + errores);
     },
   },
   mounted() {
-    this.actualizar();
+    this.reload();
   },
 };
 </script>

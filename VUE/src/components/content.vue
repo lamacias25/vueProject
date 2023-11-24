@@ -4,11 +4,11 @@
       <div v-for="(x, indexX) in y" v-bind:key="indexX" class="row">
         <label v-if="x.type != 'button'">{{ x.label }}</label>
         <input type="text" v-if="x.type == 'text'" class="form-control"
-          v-bind:class="validaText(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
+          v-bind:class="checkText(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
         <input type="text" v-if="x.type == 'mail'" class="form-control"
-          v-bind:class="validaText(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
+          v-bind:class="checkText(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
         <input type="number" v-if="x.type == 'number'" class="form-control"
-          v-bind:class="validaNumber(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
+          v-bind:class="checkNumber(info[index][indexY][indexX].value)" v-model="info[index][indexY][indexX].value" />
         <button v-if="x.type == 'button'" class="btn btn-primary mx-auto">
           {{ x.label }}
         </button>
@@ -32,22 +32,22 @@
         </tr>
         <tr class="" v-for="(ele, i) in listaUsuarios" v-bind:key="i">
           <td v-bind:id="i" class="col-md-2">
-            <input type="text" class="form-control" v-bind:class="validaText(listaUsuarios[i].nombre)"
+            <input type="text" class="form-control" v-bind:class="checkText(listaUsuarios[i].nombre)"
               v-model="listaUsuarios[i].nombre" />
           </td>
           <td v-bind:id="i" class="col-md-2">
-            <input type="text" class="form-control" v-bind:class="validaText(listaUsuarios[i].descripcion)"
+            <input type="text" class="form-control" v-bind:class="checkText(listaUsuarios[i].descripcion)"
               v-model="listaUsuarios[i].descripcion" />
           </td>
           <td v-bind:id="i" class="col-md-2">
-            <input type="number" class="form-control" v-bind:class="validaNumber(listaUsuarios[i].stock)"
+            <input type="number" class="form-control" v-bind:class="checkNumber(listaUsuarios[i].stock)"
               v-model="listaUsuarios[i].stock" />
           </td>
           <td class="col-md-2">
-            <button v-bind:id="i" class="btn btn-danger" @click="eliminar({ correo: ele.correo, id: ele.id_producto })">
+            <button v-bind:id="i" class="btn btn-danger" @click="removeItem({ correo: ele.correo, id: ele.id_producto })">
               Eliminar
             </button>
-            <button v-bind:id="i" class="btn btn-success" @click="modificar(listaUsuarios[i])">
+            <button v-bind:id="i" class="btn btn-success" @click="updateItem(listaUsuarios[i])">
               Actualizar
             </button>
           </td>
@@ -78,7 +78,7 @@ export default {
         value: "",
       });
     },
-    validaNumber: function (value) {
+    checkNumber: function (value) {
       return {
         "is-valid": /^([0-9])*$/.test(
           value
@@ -88,7 +88,7 @@ export default {
         ),
       };
     },
-    validaText: function (value) {
+    checkText: function (value) {
       return {
         "is-valid":
           /^[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:\s+[0-9a-zA-ZáéíóúÁÉÍÓÚüÜñÑ,.:]+){0,300}(?<!\s)$/.test(
@@ -106,11 +106,11 @@ export default {
         if (i != "id_producto")
           switch (data[i]["type"]) {
             case "text":
-              if (this.validaText(data[i]["value"])["is-invalid"])
+              if (this.checkText(data[i]["value"])["is-invalid"])
                 datosForm.push(data[i]["value"]);
               break;
             case "number":
-              if (this.validaNumber(data[i]["value"])["is-invalid"]) {
+              if (this.checkNumber(data[i]["value"])["is-invalid"]) {
                 datosForm.push(data[i]["value"]);
               }
               break;
@@ -120,7 +120,7 @@ export default {
       }
       return datosForm;
     },
-    actualizar: function () {
+    reload: function () {
       axios.get("http://127.0.0.1:8800/login").then((response) => {
         axios
           .post("http://127.0.0.1:8800/consulta", {
@@ -143,7 +143,7 @@ export default {
       delete datos["createdAt"];
       return datos;
     },
-    modificar: function (data) {
+    updateItem: function (data) {
       let datosForm = this.converteFormat(data);
       let errores = this.check(datosForm);
       errores.length == 0
@@ -157,12 +157,12 @@ export default {
               },
             })
             .then(() => {
-              this.actualizar();
+              this.reload();
             });
         })
         : alert("Existen errores en: " + errores);
     },
-    eliminar: function (data) {
+    removeItem: function (data) {
       axios.get("http://127.0.0.1:8800/login").then((response) => {
         axios
           .post("http://127.0.0.1:8800/eliminar", {
@@ -173,7 +173,7 @@ export default {
             },
           })
           .then(() => {
-            this.actualizar();
+            this.reload();
           });
       });
     },
@@ -188,14 +188,14 @@ export default {
               Authentication: response.data.token,
             })
             .then(() => {
-              this.actualizar();
+              this.reload();
             });
         })
         : alert("Existen errores en: " + errores);
     },
   },
   mounted() {
-    this.actualizar();
+    this.reload();
     let inputs = [];
     inputs.push({
       name: "nombre",
@@ -212,11 +212,11 @@ export default {
       type: "number",
       label: "Stock",
     });
-    let formulario = {
+    let form = {
       0: inputs,
     };
     this.info = [];
-    this.info.push(formulario);
+    this.info.push(form);
   },
 };
 </script>

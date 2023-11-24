@@ -52,7 +52,6 @@ export default class Persona {
     try {
       var con = this.conexion();
       con.connect();
-      console.log(tabla);
       con.query(
         "SELECT " + column.join() + " from " + tabla + "",
         (err, result, fields) => {
@@ -122,7 +121,6 @@ export default class Persona {
         datos: true,
       });
     } catch (error) {
-      console.log(error);
     }
   }
   eliminar(id, tabla, r) {
@@ -135,12 +133,10 @@ export default class Persona {
         datos: true,
       });
     } catch (error) {
-      console.log(error);
     }
   }
   verifyToken(req, res, next) {
     const token = req.body.Authentication ? req.body.Authentication : req.body.data.Authentication; // Typically, you'd send the token in the Authorization header
-    console.log(token);
     if (!token) {
       return res.status(403).json({ message: "No token provided" });
     }

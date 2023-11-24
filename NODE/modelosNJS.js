@@ -3,7 +3,6 @@ import Persona from "./manejador.js"; // Ruta correcta al archivo Js
 
 let per = new Persona("156.67.74.51", "u365242883_prueba", "Prueba2023", "u365242883_prueba");
 var port = process.env.PORT || 8800;
-var sequelize = per.getSequelize();
 var app = per.getApp();
 
 app.get("/login", function (req, res) {
@@ -18,7 +17,6 @@ app.post("/consulta", per.verifyToken, (req, res) => {
 app.post("/insert", per.verifyToken, (req, res) => {
   req.body.data = per.sanitizar(req.body.data);
   let datos = {};
-  let correcto = true;
   for (let i in req.body.data)
     datos[req.body.data[i].name] = req.body.data[i].value;
   per.alta(datos, "products", res);
