@@ -1,0 +1,141 @@
+.product {
+    width: 250px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    margin: 5px;
+    border: solid 1px #0000006e;
+    box-shadow: inset 0px 0px 16px #00000085;
+  }
+  
+  .product>img {
+    width: 98px;
+    height: 100px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .product p {
+    max-height: 90px;
+    overflow: hidden;
+    text-align: justify;
+    margin: 0px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .listProducts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .control {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+    width: fit-content;
+    margin: auto;
+  }
+  
+  .carrito {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+    z-index: 6;
+  }
+  
+  .control>button {
+    width: 30px;
+    height: 30px;
+    line-height: 10px;
+    font-size: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .control>*:disabled {
+    background-color: dimgrey;
+    color: linen;
+    opacity: 0.4;
+    border: none;
+  
+  }
+  
+  .lista_carrito {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    width: 40%;
+    height: -webkit-fill-available;
+    border: solid 1px grey;
+    overflow: auto;
+    backdrop-filter: blur(17px);
+  }
+  
+  .miniProduct {
+    padding: 5px;
+    width: -webkit-fill-available;
+    height: 80px;
+    display: flex;
+  }
+  
+  .miniProduct>img {
+    width: 60px;
+  }
+  
+  .car {
+    z-index: 1;
+    width: 49px;
+    height: 40px;
+    font-size: 24px;
+    line-height: 19px;
+  }
+  
+  .car>p {
+    position: absolute;
+    top: 20px;
+    right: 2px;
+    color: black;
+    backdrop-filter: blur(4px);
+    width: fit-content;
+    height: 20px;
+    font-size: 21px;
+    line-height: 18px;
+    padding: 3px;
+  }
+  
+  .data {
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+  }
+  
+  .data p {
+    margin: 0px;
+  }
